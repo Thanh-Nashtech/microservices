@@ -1,0 +1,37 @@
+name: GitHub Actions Demo
+on: [push]
+jobs:
+  Docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: thanhphan1098/microservices_client:latest
+      - 
+        name: Deploy Docker On Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          script: |
+            docker rm --force microservices_client
+            docker pull thanhphan1098/microservices_client:latest
+            docker run -d -p 3008:3000 \
+            --name microservices_client thanhphan1098/microservices_client:latest
+            docker system prune -f

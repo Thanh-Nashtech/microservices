@@ -1,0 +1,4 @@
+export const GET_REQUEST_CONFIG = {
+    DEFAULT_PAGE: 1,
+    DEFAULT_LIMIT: 8
+}

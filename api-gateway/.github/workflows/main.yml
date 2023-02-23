@@ -1,0 +1,43 @@
+name: GitHub Actions Demo
+on: [push]
+jobs:
+  Docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: thanhphan1098/microservices_api_gateway:latest
+          secrets: |
+            "AUTHOR=${{ secrets.AUTHOR }}"
+      - 
+        name: Deploy Docker On Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            docker rm --force microservices_api_gateway
+            docker pull thanhphan1098/microservices_api_gateway:latest
+            docker run -d -p 3000:3000 \
+            -e AUTHOR="${{ secrets.AUTHOR }}" \
+            -e NATS_SERVER_URL="${{ secrets.NATS_SERVER_URL }}" \
+            -e NATS_TOKEN="${{ secrets.NATS_TOKEN }}" \
+            --name microservices_api_gateway thanhphan1098/microservices_api_gateway:latest
+            docker system prune -f
