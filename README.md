@@ -8,3 +8,7 @@ The project includes some services below:
 - Auth service: play a role as a middleware to verify the user 
 - API Gateway service: this service is a middle service which plays a role to interact directly with clients and then send request to each micro service inside. 
 ![alt text](https://github.com/Thanh-Nashtech/microservices/blob/main/ORM.png?raw=true)
+
+## AUTHENTICATION
+![alt text](https://github.com/Thanh-Nashtech/microservices/blob/main/authentication-flow.png?raw=true)
+When clients send requests to the application, the first destination is the gateway. Here, the gateway will check the request headers authorization. In this application, JWT token is using, the token will be sent to the auth service. Here, if the auth service successfully verifies the token, it can get the information about user id, user name, roles and permissions then it sends the results back to the gateway. If the gateway receives the information of the user, it means the user has been authorized successfully, then the gateway will check the permissions to decide whether the requests are continually sent to other inside micro services. Otherwise, if the auth service cannot verify the user or the permissions cannot be passed, it sends 401 or 403 statuses to the gateway, then the gateway sends errors to clients. 
