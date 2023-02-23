@@ -7,3 +7,4 @@ The project includes some services below:
 - User service: allow to manage user of the system such as CRUD, grant permissions. 
 - Auth service: play a role as a middleware to verify the user 
 - API Gateway service: this service is a middle service which plays a role to interact directly with clients and then send request to each micro service inside. 
+![alt text](https://github.com/Thanh-Nashtech/microservices/blob/main/ORM.png?raw=true)
